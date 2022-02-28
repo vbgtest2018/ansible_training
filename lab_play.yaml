@@ -1,0 +1,36 @@
+---
+
+-
+
+  hosts: linux
+
+  # vars:
+
+  tasks:
+    - name: Install Epel
+      yum:
+        name: epel-release
+        state: latest
+        update_cache: yes
+      when: ansible_distribution == 'CentOS'
+
+    - name: Install Nginx
+      package:
+        name: nginx
+        state: latest
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+      notify: Check HTTP Service
+
+  handlers:
+    - name: Check HTTP Service
+      uri:
+        url: https://{{ ansible_default_ipv4.address }}
+        status_code: 200
+
+
+
+...
